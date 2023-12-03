@@ -34,6 +34,12 @@
         if(!inserisci_categoria($connessione,$etichetta,$grado)){
             //errore
         }
+    }else if(isset($_POST["export_guadagni"])) {
+        downloadGuadagniCSV($connessione);
+    }else if(isset($_POST["export_spese"])) {
+        downloadSpeseCSV($connessione);
+    }else if(isset($_POST["export_categorie"])) {
+        downloadCategorieCSV($connessione);
     }
 
 
@@ -101,7 +107,7 @@
             background-color:#EAEAEA;
         }
 
-        .resoconto_mensile,.resoconto_media{
+        .resoconto_mensile,.resoconto_media,  .esportazione{
             /*border:1px solid red;*/
             width:100%;
             display:flex;
@@ -273,6 +279,11 @@
             border:1px solid black;
             border-radius:5px;
             padding:2% 2%;
+        }
+
+        .esportazione{
+            margin-top:2%;
+            margin-bottom:5%;
         }
 
         /*controlla larghezza schermo, quando è troppo poca
@@ -547,7 +558,13 @@
     </div>
 
     <div class="esportazione" id="esporta">
+        <div class="titolo"><h1>Esporta dati</h1></div>
         <!--scarica file pdf e csv con tutti i dati di transazione-->
+        <form method="post" action="<?php echo $_SERVER['PHP_SELF'] ?>">
+            <button type="submit" name="export_guadagni">guadagni</button>
+            <button type="submit" name="export_spese">spese</button>
+            <button type="submit" name="export_categorie">categorie</button>
+        </form>
     </div>
 
     <div class="Window_input aggiungi_guadagni">
@@ -560,7 +577,7 @@
         <div class="input">
             <form class="form_input" method="POST" action="<?php echo $_SERVER['PHP_SELF'] ?>">
                 <input placeholder="etichetta" name="etichetta" type="text">
-                <input placeholder="valore" type="number" name="valore">
+                <input placeholder="valore" type="number" name="valore" step="0.01" pattern="[0-9]+([,\.][0-9]+)?">
                 <input type="date" name="data" value="<?php echo date('Y-m-d'); ?>"> 
                 <select name="stato">
                         <option value="0">ricevuto</option>
@@ -593,7 +610,7 @@
                         }
                     ?>
                 </select>
-                <input placeholder="valore" type="number" name="valore">
+                <input placeholder="valore" type="number" name="valore" step="0.01" pattern="[0-9]+([,\.][0-9]+)?">
                 <input placeholder="data" type="date" name="data" value="<?php echo date('Y-m-d'); ?>">
                 <select name="stato">
                         <option value="0">ricevuto</option>
@@ -628,6 +645,8 @@
     </div>
 
     <script>
+        
+
         window.addEventListener('scroll', function() {
             var navbar = document.getElementById('navBar');
             console.log(window.scrollY);
@@ -792,7 +811,7 @@ function windowAggiungiCategoria() {
         if($result['totale_guadagni']==null){
             return number_format(0, 2);
         }
-        return $result['totale_guadagni'];
+        return number_format($result['totale_guadagni'],2);
     }
 
     function getSpesoMonth($connessione){
@@ -805,7 +824,7 @@ function windowAggiungiCategoria() {
         if($result['totale_spese']==null){
             return number_format(0, 2);
         }
-        return $result['totale_spese'];
+        return number_format($result['totale_spese'],2);
     }
     
     function getDiffMonth($connessione){
@@ -1048,5 +1067,105 @@ function windowAggiungiCategoria() {
         $stmt = $connessione->prepare("INSERT INTO `categorie`(`nome`, `grado`) VALUES (?,?)");
         $stmt->execute([$etichetta,$grado]);
         return true;
+    }
+
+    function downloadGuadagniCSV($connessione) {
+        // Query per ottenere tutti i dati dalla tabella "guadagni"
+        $query = "SELECT Id, etichetta, valore, data, stato FROM guadagni";
+        $stmt = $connessione->prepare($query);
+        $stmt->execute();
+    
+        // Verifica se ci sono risultati
+        if ($stmt->rowCount() > 0) {
+            // Genera il file CSV
+            $filename = 'guadagni.csv';
+            header('Content-Type: text/csv');
+            header('Content-Disposition: attachment; filename="' . $filename . '"');
+    
+            $output = fopen('php://output', 'w');
+    
+            // Intestazione CSV
+            fputcsv($output, array('Id', 'etichetta', 'valore', 'data', 'stato'));
+    
+            // Dati CSV
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                fputcsv($output, $row);
+            }
+    
+            fclose($output);
+            
+            // Interrompi l'esecuzione del codice per evitare ulteriori output indesiderati
+            exit;
+        } else {
+            // Nessun dato trovato
+            return false;
+        }
+    }
+
+
+    function downloadSpeseCSV($connessione) {
+        // Query per ottenere tutti i dati dalla tabella "spese"
+        $query = "SELECT Id, etichetta, valore, data, stato, Id_categoria FROM spese";
+        $stmt = $connessione->prepare($query);
+        $stmt->execute();
+    
+        // Verifica se ci sono risultati
+        if ($stmt->rowCount() > 0) {
+            // Genera il file CSV
+            $filename = 'spese.csv';
+            header('Content-Type: text/csv');
+            header('Content-Disposition: attachment; filename="' . $filename . '"');
+    
+            $output = fopen('php://output', 'w');
+    
+            // Intestazione CSV
+            fputcsv($output, array('Id', 'etichetta', 'valore', 'data', 'stato', 'Id_categoria'));
+    
+            // Dati CSV
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                fputcsv($output, $row);
+            }
+    
+            fclose($output);
+    
+            // Interrompi l'esecuzione del codice per evitare ulteriori output indesiderati
+            exit;
+        } else {
+            // Nessun dato trovato
+            return false;
+        }
+    }
+
+    function downloadCategorieCSV($connessione) {
+        // Query per ottenere tutti i dati dalla tabella "categorie"
+        $query = "SELECT Id, nome, grado FROM categorie";
+        $stmt = $connessione->prepare($query);
+        $stmt->execute();
+
+        // Verifica se ci sono risultati
+        if ($stmt->rowCount() > 0) {
+            // Genera il file CSV
+            $filename = 'categorie.csv';
+            header('Content-Type: text/csv');
+            header('Content-Disposition: attachment; filename="' . $filename . '"');
+
+            $output = fopen('php://output', 'w');
+
+            // Intestazione CSV
+            fputcsv($output, array('Id', 'nome', 'grado'));
+
+            // Dati CSV
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                fputcsv($output, $row);
+            }
+
+            fclose($output);
+
+            // Interrompi l'esecuzione del codice per evitare ulteriori output indesiderati
+            exit;
+        } else {
+            // Nessun dato trovato
+            return false;
+        }
     }
 ?>
