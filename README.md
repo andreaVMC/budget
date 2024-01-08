@@ -4,8 +4,6 @@ Assicurati di avere un server locale installato sul tuo computer, come XAMPP o W
 
 Scarica il codice sorgente del programma e posizionalo nella directory corrispondente del tuo server locale. Ad esempio, se stai utilizzando XAMPP, posiziona il file index.php nella cartella htdocs del tuo server.
 
-Apri il tuo browser web preferito e digita l'URL del tuo server locale seguito dal percorso del file index.php. Ad esempio, se stai utilizzando XAMPP e hai posizionato il file index.php nella cartella htdocs/progetti/personale/budget, digita http://localhost/progetti/personale/budget/index.php nella barra degli indirizzi del tuo browser.
-
 Una volta caricata la pagina, dovresti vedere un'interfaccia utente che ti permette di eseguire diverse azioni.
 
 Per scaricare un file CSV contenente i dati dei guadagni, fai clic sul pulsante "Download Guadagni CSV". Verrà generato un file CSV chiamato "guadagni.csv" che verrà scaricato sul tuo computer.
