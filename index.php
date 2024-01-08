@@ -324,8 +324,8 @@
                         <!--prima dati poi seconda riga percentuali-->
 
                         <tr class="trDefault">
-                            <td><?php echo getGuadagnatoMonth($connessione)."€"; ?></td>
-                            <td><?php echo getSpesoMonth($connessione)."€"; ?></td>
+                            <td><?php echo number_format(getGuadagnatoMonth($connessione),2)."€"; ?></td>
+                            <td><?php echo number_format(getSpesoMonth($connessione),2)."€"; ?></td>
                             <?php
                                 $color="";
                                 if(getDiffMonth($connessione)<0){
@@ -335,15 +335,15 @@
                                 }
                             ?>
                             <td style="background-color:<?php echo $color ?>;">
-                                <?php echo getDiffMonth($connessione)."€"; ?>
+                                <?php echo number_format(getDiffMonth($connessione),2)."€"; ?>
                             </td>
                         </tr>
 
                         <tr class="trDefault">
-                            <td><?php echo getGuadagnatoMonthPerc($connessione)."%" ?></td>
-                            <td><?php echo getSpesoMonthPerc($connessione)."%" ?></td>
+                            <td><?php echo number_format(getGuadagnatoMonthPerc($connessione),2)."%" ?></td>
+                            <td><?php echo number_format(getSpesoMonthPerc($connessione),2)."%" ?></td>
                             <td style="background-color:<?php echo $color ?>;">
-                                <?php echo getDifMonthPerc($connessione)."%"; ?>
+                                <?php echo number_format(getDifMonthPerc($connessione),2)."%"; ?>
                             </td>
                         </tr>
                     </table>
@@ -357,15 +357,15 @@
                         </tr>
 
                         <tr class="trDefault">
-                           <td><?php echo getTotGradoMonth($connessione,0)."€"; /*non necessaria*/?></td>
-                           <td><?php echo getTotGradoMonth($connessione,1)."€"; /*necessaria*/?></td>
-                           <td><?php echo getTotGradoMonth($connessione,2)."€"; /*investimento*/?></td> 
+                           <td><?php echo number_format(getTotGradoMonth($connessione,0) ,2)."€"; /*non necessaria*/?></td>
+                           <td><?php echo number_format(getTotGradoMonth($connessione,1),2)."€"; /*necessaria*/?></td>
+                           <td><?php echo number_format(getTotGradoMonth($connessione,2),2)."€"; /*investimento*/?></td> 
                         </tr>
 
                         <tr class="trDefault">
-                           <td><?php echo getTotGradoMonthPerc($connessione,0)."%" ?></td>
-                           <td><?php echo getTotGradoMonthPerc($connessione,1)."%" ?></td>
-                           <td><?php echo getTotGradoMonthPerc($connessione,2)."%" ?></td>
+                           <td><?php echo number_format(getTotGradoMonthPerc($connessione,0),2)."%" ?></td>
+                           <td><?php echo number_format(getTotGradoMonthPerc($connessione,1),2)."%" ?></td>
+                           <td><?php echo number_format(getTotGradoMonthPerc($connessione,2),2)."%" ?></td>
                         </tr>
                     </table>
                 </div>
@@ -384,10 +384,10 @@
                         </tr>
                         <tr class="trDefault">
                             <th style="background-color:lightgray;">mese</th>
-                            <td><?php echo getGuadagnatoMonthPerc($connessione)."%" ?></td>
-                            <td><?php echo getSpesoMonthPerc($connessione)."%" ?></td>
+                            <td><?php echo number_format(getGuadagnatoMonthPerc($connessione),2)."%" ?></td>
+                            <td><?php echo number_format(getSpesoMonthPerc($connessione),2)."%" ?></td>
                             <td style="background-color:<?php echo $color ?>;">
-                                <?php echo getDifMonthPerc($connessione)."%"; ?>
+                                <?php echo number_format(getDifMonthPerc($connessione),2)."%"; ?>
                             </td>
                         </tr>
                         <?php
@@ -400,17 +400,17 @@
                         ?>
                         <tr class="trDefault">
                             <th style="background-color:lightgray;">media</th>
-                            <td><?php echo getMediaGuadagnoAllMonthPerc($connessione)."%" ?></td>
-                            <td><?php echo getMediaSpesaAllMonthPerc($connessione)."%" ?></td>
-                            <td style="background-color:<?php echo $color; ?>"><?php echo getMediaDifAllMonthPerc($connessione)."%" ?></td>
+                            <td><?php echo number_format(getMediaGuadagnoAllMonthPerc($connessione),2)."%" ?></td>
+                            <td><?php echo number_format(getMediaSpesaAllMonthPerc($connessione),2)."%" ?></td>
+                            <td style="background-color:<?php echo $color; ?>"><?php echo number_format(getMediaDifAllMonthPerc($connessione),2)."%" ?></td>
                         </tr>
 
 
                         <tr class="trDefault">
                             <td style="background-color:lightgray;"></td>
-                            <td><?php echo getMediaGuadagnoAllMonth($connessione)."€" ?></td>
-                            <td><?php echo getMediaSpesaAllMonth($connessione)."€" ?></td>
-                            <td style="background-color:<?php echo $color; ?>"><?php echo getMediaDifAllMonth($connessione)."€" ?></td>
+                            <td><?php echo number_format(getMediaGuadagnoAllMonth($connessione),2)."€" ?></td>
+                            <td><?php echo number_format(getMediaSpesaAllMonth($connessione),2)."€" ?></td>
+                            <td style="background-color:<?php echo $color; ?>"><?php echo number_format(getMediaDifAllMonth($connessione),2)."€" ?></td>
                         </tr>
                     </table>
                 </div>
@@ -424,21 +424,21 @@
                         </tr>
                         <tr class="trDefault">
                             <th style="background-color:lightgray;">mese</th>
-                            <td><?php echo getTotGradoMonthPerc($connessione,0)."%" ?></td>
-                            <td><?php echo getTotGradoMonthPerc($connessione,1)."%" ?></td>
-                            <td><?php echo getTotGradoMonthPerc($connessione,2)."%" ?></td>
+                            <td><?php echo number_format(getTotGradoMonthPerc($connessione,0),2)."%" ?></td>
+                            <td><?php echo number_format(getTotGradoMonthPerc($connessione,1),2)."%" ?></td>
+                            <td><?php echo number_format(getTotGradoMonthPerc($connessione,2),2)."%" ?></td>
                         </tr>
                         <tr class="trDefault">
                             <th style="background-color:lightgray;">media</th>
-                            <td><?php echo getTotGradoAllPerc($connessione,0)."%"; ?></td>
-                            <td><?php echo getTotGradoAllPerc($connessione,1)."%"; ?></td>
-                            <td><?php echo getTotGradoAllPerc($connessione,2)."%"; ?></td>
+                            <td><?php echo number_format(getTotGradoAllPerc($connessione,0),2)."%"; ?></td>
+                            <td><?php echo number_format(getTotGradoAllPerc($connessione,1),2)."%"; ?></td>
+                            <td><?php echo number_format(getTotGradoAllPerc($connessione,2),2)."%"; ?></td>
                         </tr>
                         <tr class="trDefault">
                             <th style="background-color:lightgray;"></th>
-                            <td><?php echo getTotGradoAll($connessione,0)."€"; ?></td>
-                            <td><?php echo getTotGradoAll($connessione,1)."€"; ?></td>
-                            <td><?php echo getTotGradoAll($connessione,2)."€"; ?></td>
+                            <td><?php echo number_format(getTotGradoAll($connessione,0),2)."€"; ?></td>
+                            <td><?php echo number_format(getTotGradoAll($connessione,1),2)."€"; ?></td>
+                            <td><?php echo number_format(getTotGradoAll($connessione,2),2)."€"; ?></td>
                         </tr>
                     </table>
                 </div>
@@ -801,7 +801,7 @@ function windowAggiungiCategoria() {
         return $result;
     }
 
-    function getGuadagnatoMonth($connessione){
+    function getGuadagnatoMonth($connessione){ //bug, restituisce non numeric
         $month = date('m'); // Ottiene il mese corrente nel formato "MM"
         $stmt = $connessione->prepare("SELECT SUM(valore) AS totale_guadagni FROM `guadagni` WHERE MONTH(data) = :month");
         $stmt->bindParam(':month', $month, PDO::PARAM_STR);
@@ -809,10 +809,12 @@ function windowAggiungiCategoria() {
         
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         if($result['totale_guadagni']==null){
-            return number_format(0, 2);
+            return 0;
+            //return number_format((float) 0, 2);
         }
-        return number_format($result['totale_guadagni'],2);
-    }
+        //return number_format($result['totale_guadagni'],2);
+        return $result['totale_guadagni'];
+    }   
 
     function getSpesoMonth($connessione){
         $month = date('m'); // Ottiene il mese corrente nel formato "MM"
@@ -822,14 +824,26 @@ function windowAggiungiCategoria() {
         
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         if($result['totale_spese']==null){
-            return number_format(0, 2);
+            return 0;
+            //return number_format(0, 2);
         }
-        return number_format($result['totale_spese'],2);
+        return $result['totale_spese'];
+        //return number_format($result['totale_spese'],2);
     }
     
     function getDiffMonth($connessione){
-        $result=getGuadagnatoMonth($connessione)-getSpesoMonth($connessione);
-        return number_format($result, 2);
+        /*if(is_numeric(getGuadagnatoMonth($connessione))){
+            echo "ok1";
+        }else{
+            echo "no1";
+        }
+        if(is_numeric(getSpesoMonth($connessione))){
+            echo "ok2";
+        }else{
+            echo "no2";
+        }*/
+        $result=getGuadagnatoMonth($connessione)-getSpesoMonth($connessione); //A non-numeric value encountered why??
+        return $result;
     }
     
     function getGuadagnatoMonthPerc($connessione){
@@ -837,7 +851,6 @@ function windowAggiungiCategoria() {
         $percentuale=0;
         if($tot!=0)
             $percentuale= (getGuadagnatoMonth($connessione)*100)/$tot;
-        $percentuale = number_format($percentuale, 2);
         return $percentuale;
     }
 
@@ -846,13 +859,12 @@ function windowAggiungiCategoria() {
         $percentuale=0;
         if($tot!=0)
             $percentuale= (getSpesoMonth($connessione)*100)/$tot;
-        $percentuale = number_format($percentuale, 2);
         return $percentuale;
     }
 
     function getDifMonthPerc($connessione){
         $result=getGuadagnatoMonthPerc($connessione)-getSpesoMonthPerc($connessione);   
-        return number_format($result, 2);
+        return $result;
     }
 
     function getTotGradoMonth($connessione,$grado){
@@ -869,7 +881,7 @@ function windowAggiungiCategoria() {
             }
         }
 
-        return number_format($somma, 2);
+        return $somma;
     }
 
     function getGradoByIdCategoria($connessione, $Id){
@@ -886,9 +898,8 @@ function windowAggiungiCategoria() {
         $result=0;
         if(getSpesoMonth($connessione)!=0){
             $result = (getTotGradoMonth($connessione,$grado)*100)/getSpesoMonth($connessione);
-            $result = number_format($result, 2);
         }else{
-            $result = number_format(0, 2);
+            $result = 0;
         }
         return $result;
     }
@@ -914,7 +925,7 @@ function windowAggiungiCategoria() {
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
     
         // Restituisci la somma escludendo il mese corrente
-        return number_format($result['totale_somma']/totMonthGuadagno($connessione),2);
+        return $result['totale_somma']/totMonthGuadagno($connessione);
 
     }
 
@@ -939,7 +950,7 @@ function windowAggiungiCategoria() {
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
     
         // Restituisci la somma escludendo il mese corrente
-        return number_format($result['totale_somma']/totMonthSpesa($connessione),2);
+        return $result['totale_somma']/totMonthSpesa($connessione);
     }
     
 
@@ -982,7 +993,7 @@ function windowAggiungiCategoria() {
     
     function getMediaDifAllMonth($connessione){
         $result = getMediaGuadagnoAllMonth($connessione)-getMediaSpesaAllMonth($connessione);
-        $result = number_format($result, 2);
+        $result = $result;
         return $result;
     }
 
@@ -991,7 +1002,7 @@ function windowAggiungiCategoria() {
         $tot= getMediaGuadagnoAllMonth($connessione)+getMediaSpesaAllMonth($connessione);
         if($tot!=0)
             $result = (getMediaGuadagnoAllMonth($connessione)*100)/$tot;
-        $result = number_format($result, 2);
+        
         return $result;
     }
 
@@ -1000,7 +1011,6 @@ function windowAggiungiCategoria() {
         $tot= getMediaGuadagnoAllMonth($connessione)+getMediaSpesaAllMonth($connessione);
         if($tot!=0)
             $result = (getMediaSpesaAllMonth($connessione)*100)/$tot;
-        $result = number_format($result, 2);
         return $result;
     }
     
@@ -1035,7 +1045,7 @@ function windowAggiungiCategoria() {
             }
         }
     
-        return number_format($somma/totMonthSpesa($connessione), 2);
+        return $somma/totMonthSpesa($connessione);
     }
 
     function getTotGradoAllPerc($connessione,$grado){
@@ -1047,7 +1057,7 @@ function windowAggiungiCategoria() {
         if($tot!=0){
             $perc=(getTotGradoAll($connessione,$grado)*100)/$tot;
         }
-        return number_format($perc,2);
+        return $perc;
 
     }
 
