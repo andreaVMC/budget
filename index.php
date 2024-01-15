@@ -42,7 +42,23 @@
         downloadCategorieCSV($connessione);
     }
 
-
+    if(isset($_POST['autoUpdate_submit'])){
+        if($_POST['totale']!=number_format(getTotale($connessione), 2, '.', '')){
+            if($_POST['totale']<number_format(getTotale($connessione), 2, '.', '')){
+                inserisci_spesa($connessione,"sistema",7,number_format(getTotale($connessione), 2, '.', '')-$_POST['totale'],date('Y-m-d'),0);
+            }else{
+                inserisci_guadagno($connessione,"sistema",$_POST['totale']-number_format(getTotale($connessione), 2, '.', ''),date('Y-m-d'),0);
+            }
+        }else if(number_format(getTotale($connessione), 0, '.', '') != calcolaFish($_POST['chip500'],$_POST['chip100'],$_POST['chip50'],$_POST['chip25'],$_POST['chip10'],$_POST['chip5'],$_POST['chip1'])){
+            if(calcolaFish($_POST['chip500'],$_POST['chip100'],$_POST['chip50'],$_POST['chip25'],$_POST['chip10'],$_POST['chip5'],$_POST['chip1'])<number_format(getTotale($connessione), 2, '.', '')){
+                inserisci_spesa($connessione,"sistema",7,number_format(getTotale($connessione), 2, '.', '')-calcolaFish($_POST['chip500'],$_POST['chip100'],$_POST['chip50'],$_POST['chip25'],$_POST['chip10'],$_POST['chip5'],$_POST['chip1']),date('Y-m-d'),0);
+            }else{
+                inserisci_guadagno($connessione,"sistema",calcolaFish($_POST['chip500'],$_POST['chip100'],$_POST['chip50'],$_POST['chip25'],$_POST['chip10'],$_POST['chip5'],$_POST['chip1'])-number_format(getTotale($connessione), 2, '.', ''),date('Y-m-d'),0);
+            }
+        }else{
+            echo "non hai cambiato nulla";
+        }
+    }
 
 ?>
 <!DOCTYPE html>
@@ -75,6 +91,7 @@
             border-radius:5px;
             background-color:gray; 
             position:static;
+            z-index: 999;
         }
 
         .navBar>.cntnr{
@@ -94,7 +111,7 @@
             padding: 2%;
         }
 
-        .resoconti{
+        .resoconti, .autoUpdate{
             /*border:1px solid green;*/
             display:flex;
             flex-direction:column;
@@ -107,7 +124,7 @@
             background-color:#EAEAEA;
         }
 
-        .resoconto_mensile,.resoconto_media,  .esportazione{
+        .resoconto_mensile,.autoUpdate_box,.resoconto_media,  .esportazione{
             /*border:1px solid red;*/
             width:100%;
             display:flex;
@@ -117,6 +134,71 @@
             padding:2% 2%;
             border-radius:5px;
             margin:2% 2%;
+        }
+
+        .autoUpdate_box>button{
+            margin-top:2%;
+        }
+
+        .autoUpdate_box>form{
+            width:100%;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+        }
+
+        form>input{
+            margin-top:2%;
+            text-align: center;
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 0.5% 0.5%;
+        }
+
+        .chips{
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap:10px;
+            width:100%;
+            border: 1px solid red;
+        }
+
+        .autoUpdate_box>.totale{
+            font-weight:700;
+            margin-top:2%;
+        }
+
+        
+        .chip{
+            border: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height:100%;
+        }
+
+        .chip>.fish{
+            border:1px solid green;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .chip>.fish>img{
+            width:80%;
+            /*margin-top:-75%;*/
+        }
+
+        .chip>input{
+            margin-top:2%;
+            width: 90%;
+            text-align: center;
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 2% 2%;
         }
 
         .mensile_tabelle,.media_tabelle{
@@ -304,6 +386,79 @@
             <button>esporta</button>    
         </div>
     </div>
+
+    <div class="autoUpdate">
+        <div class="autoUpdate_box">
+            <div class="titolo"><h1>Aggiorna conto</h1></div>
+                <form name="autoUpdate_form" method="post" action="<?php echo $_SERVER['PHP_SELF'] ?>">
+                    <div class="chips"> 
+                        <div class="chip">
+                            <div class="fish">
+                                <?php
+                                    echo generateChips($connessione, 500);
+                                ?>
+                            </div>
+                            <input type="number" value="<?php echo getChips($connessione,500) ?>" name="chip500">
+                        </div>
+                        <div class="chip">
+                            <div class="fish">
+                                <?php
+                                    echo generateChips($connessione, 100);
+                                ?>
+                            </div>
+                            <input type="number" value="<?php echo getChips($connessione,100) ?>" name="chip100">
+                        </div>
+                        <div class="chip">
+                            <div class="fish">
+                                <?php
+                                    echo generateChips($connessione, 50);
+                                ?>
+                            </div>
+                            <input type="number" value="<?php echo getChips($connessione,50) ?>" name="chip50">
+                        </div>
+                        <div class="chip">
+                            <div class="fish">
+                                <?php
+                                    echo generateChips($connessione, 25);
+                                ?>
+                            </div>
+                            <input type="number" value="<?php echo getChips($connessione,25) ?>" name="chip25">
+                        </div>
+                        <div class="chip">
+                            <div class="fish">
+                                <?php
+                                    echo generateChips($connessione, 10);
+                                ?>
+                            </div>
+                            <input type="number" value="<?php echo getChips($connessione,10) ?>" name="chip10">
+                        </div>
+                        
+                        <div class="chip">
+                            <div class="fish">
+                                <?php
+                                    echo generateChips($connessione, 5);
+                                ?>
+                            </div>
+                            <input type="number" value="<?php echo getChips($connessione,5) ?>" name="chip5">
+                        </div>
+
+                        <div class="chip">
+                            <div class="fish"> <!--funzione generatechips(value)-->
+                                <?php
+                                    echo generateChips($connessione, 1);
+                                ?>
+                            </div>
+                            <input type="number" value="<?php echo getChips($connessione,1) ?>" name="chip1">
+                        </div>
+                        <input type="submit" name="autoUpdate_submit" style="display:none;" id="chips_submit">
+                    </div>
+                    <input class="totale" type="number" name="totale" value="<?php echo number_format(getTotale($connessione), 2, '.', ''); ?>"> <!--get totale-->
+                </form>
+                <button onclick="document.getElementById('chips_submit').click();">aggiorna</button>
+            </div>
+        </div>
+    </div>
+
 
     <div class="resoconti" id="resoconti">
         <!--spesi e guadagnati questo mese-->
@@ -1177,5 +1332,102 @@ function windowAggiungiCategoria() {
             // Nessun dato trovato
             return false;
         }
+    }
+
+    function getTotale($connessione){
+        $stmt = $connessione->prepare("SELECT SUM(valore) AS totale_guadagni FROM `guadagni` WHERE `stato`=0");
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $totale_guadagni=$result['totale_guadagni'];
+
+        $stmt = $connessione->prepare("SELECT SUM(valore) AS totale_spese FROM `spese` WHERE `stato`=0");
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $totale_spese=$result['totale_spese'];
+
+        $totale=$totale_guadagni-$totale_spese;
+        return $totale;
+    }
+
+    function getChips($connessione,$value){
+        $totale=number_format(getTotale($connessione), 2, '.', '');
+        $ctr=0;
+
+        while($totale>=500){
+            $totale-=500;
+            $ctr++;
+        }
+        if($value==500)
+            return $ctr;
+
+        $ctr=0;
+        while($totale>=100){
+            $totale-=100;
+            $ctr++;
+        }
+        if($value==100)
+            return $ctr;
+
+        $ctr=0;
+        while($totale>=50){
+            $totale-=50;
+            $ctr++;
+        }
+        if($value==50)
+            return $ctr;
+
+        $ctr=0;
+        while($totale>=25){
+            $totale-=25;
+            $ctr++;
+        }
+        if($value==25)
+            return $ctr;
+
+        $ctr=0;
+        while($totale>=10){
+            $totale-=10;
+            $ctr++;
+        }
+        if($value==10)
+            return $ctr;
+
+        $ctr=0;
+        while($totale>=5){
+            $totale-=5;
+            $ctr++;
+        }
+        if($value==5)
+            return $ctr;
+
+        $ctr=0;
+        while($totale>=1){
+            $totale-=1;
+            $ctr++;
+        }
+        return $ctr;
+    }
+
+    function generateChips($connessione,$value){
+        $ctr=getChips($connessione,$value);
+        $result="";
+
+        if($ctr==0)
+            return '<img src="IMG/0.png" class="chip_0" style="z-index:1">';
+        else{    
+
+            for($i=1;$i<$ctr && $ctr<=5;$i++){
+                $result .= "<img src='IMG/{$value}.png' class='chip_value{$value}_num{$ctr}' style='z-index:".($ctr-$i+1)."; margin-bottom:-70%;'>";
+            }
+
+            $result .= "<img src='IMG/{$value}.png' class='chip_default' style='z-index:1;'>";
+        }
+        return $result;
+    }
+
+    function calcolaFish($v500,$v100,$v50,$v25,$v10,$v5,$v1){
+        $tot=0;
+        $tot=$v500*500+$v100*100+$v50*50+$v25*25+$v10*10+$v5*5+$v1;
+        return $tot;
     }
 ?>
