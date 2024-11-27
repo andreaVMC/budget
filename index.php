@@ -9,6 +9,12 @@
     }else if(isset($_POST['change_spese'])){
         $Id_record=$_POST['change_spese'];
         aggiornaRecordStato($Id_record,"spese",$connessione);
+    }else if(isset($_POST['delete_guadagni'])){
+        $Id_record=$_POST['delete_guadagni'];
+        deleteRecordStato($Id_record,"guadagni",$connessione);
+    }else if(isset($_POST['delete_spese'])){
+        $Id_record=$_POST['delete_spese'];
+        deleteRecordStato($Id_record,"spese",$connessione);
     }
 
     if(isset($_POST['aggiungi_guadagno'])){
@@ -55,8 +61,6 @@
             }else{
                 inserisci_guadagno($connessione,"sistema",calcolaFish($_POST['chip500'],$_POST['chip100'],$_POST['chip50'],$_POST['chip25'],$_POST['chip10'],$_POST['chip5'],$_POST['chip1'])-number_format(getTotale($connessione), 2, '.', ''),date('Y-m-d'),0);
             }
-        }else{
-            echo "non hai cambiato nulla";
         }
     }
 
@@ -150,7 +154,7 @@
         form>input{
             margin-top:2%;
             text-align: center;
-            border: 1px solid #333;
+            /*border: 1px solid #333;*/
             border-radius: 5px;
             padding: 0.5% 0.5%;
         }
@@ -160,7 +164,7 @@
             grid-template-columns: repeat(7, 1fr);
             gap:10px;
             width:100%;
-            border: 1px solid red;
+            /*border: 1px solid red;*/
         }
 
         .autoUpdate_box>.totale{
@@ -170,7 +174,7 @@
 
         
         .chip{
-            border: 1px solid #333;
+            /*border: 1px solid #333;*/
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -179,7 +183,7 @@
         }
 
         .chip>.fish{
-            border:1px solid green;
+            /*border:1px solid green;*/
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -196,7 +200,7 @@
             margin-top:2%;
             width: 90%;
             text-align: center;
-            border: 1px solid #333;
+            /*border: 1px solid #333;*/
             border-radius: 5px;
             padding: 2% 2%;
         }
@@ -452,7 +456,7 @@
                         </div>
                         <input type="submit" name="autoUpdate_submit" style="display:none;" id="chips_submit">
                     </div>
-                    <input class="totale" type="number" name="totale" value="<?php echo number_format(getTotale($connessione), 2, '.', ''); ?>"> <!--get totale-->
+                    <input class="totale" type="number" name="totale" step="0.01" min="0" placeholder="0.00" value="<?php echo isset($_POST['totale']) ? htmlspecialchars($_POST['totale']) : number_format(getTotale($connessione), 2, '.', ''); ?>"> <!--get totale-->
                 </form>
                 <button onclick="document.getElementById('chips_submit').click();">aggiorna</button>
             </div>
@@ -641,8 +645,10 @@
                             echo "<td>
                                 <form style='display:none;' action='" . $_SERVER['PHP_SELF'] . "' method='POST'>
                                     <input type='submit' id='change_guadagni" . $result['Id'] . "' name='change_guadagni' value='" . $result['Id'] . "'>
+                                    <input type='submit' id='delete_guadagni" . $result['Id'] . "' name='delete_guadagni' value='" . $result['Id'] . "'>
                                 </form>
-                                <button onclick=\"document.getElementById('change_guadagni" . $result['Id'] . "').click()\">cambia</button>
+                                <button onclick=\"document.getElementById('change_guadagni" . $result['Id'] . "').click()\">🔃</button>
+                                <button onclick=\"document.getElementById('delete_guadagni" . $result['Id'] . "').click()\">🗑️</button>
                             </td>";
                             echo "</tr>";
                         }
@@ -663,7 +669,7 @@
                         <th>stato</th>
                     </tr>
                     <?php    
-                        $stmt = $connessione->prepare("SELECT * FROM `spese` ORDER BY data DESC");
+                        $stmt = $connessione->prepare("SELECT * FROM `spese` ORDER BY data DESC LIMIT 10");
                         $stmt->execute([]);
                         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         $color="";
@@ -701,8 +707,10 @@
                             echo "<td>
                                 <form style='display:none;' action='" . $_SERVER['PHP_SELF'] . "' method='POST'>
                                     <input type='submit' id='change_spese" . $result['Id'] . "' name='change_spese' value='" . $result['Id'] . "'>
+                                    <input type='submit' id='delete_spese" . $result['Id'] . "' name='delete_spese' value='" . $result['Id'] . "'>
                                 </form>
-                                <button onclick=\"document.getElementById('change_spese" . $result['Id'] . "').click()\">cambia</button>
+                                <button onclick=\"document.getElementById('change_spese" . $result['Id'] . "').click()\">🔃</button>
+                                <button onclick=\"document.getElementById('delete_guadagni" . $result['Id'] . "').click()\">🗑️</button>
                             </td>";
                             echo "</tr>";
                         }
@@ -941,6 +949,11 @@ function windowAggiungiCategoria() {
         $stmt = $connessione->prepare("UPDATE $table SET stato = $result WHERE Id = ?");
         $stmt->execute([$Id]);
     }
+
+    function deleteRecordStato($Id, $table, $connessione){
+        $stmt = $connessione->prepare("DELETE FROM $table WHERE Id=?");
+        $stmt->execute([$Id]);
+    }
     
     function getNameCategoria($Id,$connessione){
         $stmt = $connessione->prepare("SELECT nome FROM `categorie` WHERE Id=?");
@@ -973,7 +986,7 @@ function windowAggiungiCategoria() {
 
     function getSpesoMonth($connessione){
         $month = date('m'); // Ottiene il mese corrente nel formato "MM"
-        $stmt = $connessione->prepare("SELECT SUM(valore) AS totale_spese FROM `spese` WHERE MONTH(data) = :month");
+        $stmt = $connessione->prepare("SELECT SUM(valore) AS totale_spese FROM `spese` WHERE (MONTH(data) = :month) AND stato = 0");
         $stmt->bindParam(':month', $month, PDO::PARAM_STR);
         $stmt->execute();
         
@@ -1024,7 +1037,7 @@ function windowAggiungiCategoria() {
 
     function getTotGradoMonth($connessione,$grado){
         $month = date('m'); // Ottiene il mese corrente nel formato "MM"
-        $stmt = $connessione->prepare("SELECT * FROM `spese` WHERE MONTH(data) = :month");
+        $stmt = $connessione->prepare("SELECT * FROM `spese` WHERE (MONTH(data) = :month) AND stato = 0");
         $stmt->bindParam(':month', $month, PDO::PARAM_STR);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -1067,8 +1080,11 @@ function windowAggiungiCategoria() {
         $meseCorrente = $dataCorrente->format('m');
         $annoCorrente = $dataCorrente->format('Y');
     
-        // Query per sommare i valori, escludendo i record del mese corrente
-        $query = "SELECT SUM(valore) AS totale_somma FROM guadagni WHERE YEAR(data) != :annoCorrente OR MONTH(data) != :meseCorrente";
+        // Query per sommare i valori, escludendo i record del mese corrente e filtrando per stato = 0
+        $query = "SELECT SUM(valore) AS totale_somma 
+                  FROM guadagni 
+                  WHERE (YEAR(data) != :annoCorrente OR MONTH(data) != :meseCorrente) 
+                  AND stato = 0";
         
         // Esegui la query
         $stmt = $connessione->prepare($query);
@@ -1078,11 +1094,11 @@ function windowAggiungiCategoria() {
         
         // Estrai il risultato
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-        // Restituisci la somma escludendo il mese corrente
-        return $result['totale_somma']/totMonthGuadagno($connessione);
-
+        
+        // Calcola la media dividendo la somma per il numero di mesi considerati
+        return $result['totale_somma'] / totMonthGuadagno($connessione);
     }
+    
 
     function getMediaSpesaAllMonth($connessione) {
         // Ottieni la data corrente
@@ -1093,7 +1109,7 @@ function windowAggiungiCategoria() {
         $annoCorrente = $dataCorrente->format('Y');
     
         // Query per sommare i valori, escludendo i record del mese corrente
-        $query = "SELECT SUM(valore) AS totale_somma FROM spese WHERE YEAR(data) != :annoCorrente OR MONTH(data) != :meseCorrente";
+        $query = "SELECT SUM(valore) AS totale_somma FROM spese WHERE (YEAR(data) != :annoCorrente OR MONTH(data) != :meseCorrente) AND stato = 0";
         
         // Esegui la query
         $stmt = $connessione->prepare($query);
@@ -1148,7 +1164,6 @@ function windowAggiungiCategoria() {
     
     function getMediaDifAllMonth($connessione){
         $result = getMediaGuadagnoAllMonth($connessione)-getMediaSpesaAllMonth($connessione);
-        $result = $result;
         return $result;
     }
 
